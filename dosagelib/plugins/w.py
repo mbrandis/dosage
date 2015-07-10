@@ -203,7 +203,7 @@ class WormWorldSaga(_BasicScraper):
         return '%schapters/chapter%02d/%s/index.php' % (
             cls.url, cls.latestChapter, cls.lang.upper())
 
-    def getPrevUrl(self, url, data, baseUrl):
+    def getPrevUrl(self, url, data):
         """Find previous URL."""
         if 'chapter04' in url:
             return url.replace('chapter04', 'chapter03')
@@ -239,14 +239,3 @@ class _WorldOfWarcraftEh(_BasicScraper):
     stripUrl = None
     imageSearch = compile(r'http://woweh.com/(comics/.+?)"')
     prevSearch = compile(r'woweh.com/(\?p=.+:?)".+:?="prev')
-
-
-class Wulffmorgenthaler(_BasicScraper):
-    url = 'http://kindofnormal.com/wumo/'
-    rurl = escape(url)
-    stripUrl = url + '%s'
-    imageSearch = compile(tagre("div", "class", r'box-content') + r"\s*" +
-        tagre("a", "href", r'[^"]+') + r"\s*" +
-        tagre("img", "src", r'(http://kindofnormal\.com/img/wumo/\d+/\d+/[^/"]+)'))
-    prevSearch = compile(tagre("a", "href", r'(%s[^"]+)' % rurl) + tagre("i", "class", r'icon-chevron-left'))
-    help = 'Index format: yyyy/mm/dd'

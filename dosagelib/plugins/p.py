@@ -8,16 +8,6 @@ from ..helpers import bounceStarter, queryNamer, indirectStarter
 from ..util import tagre
 
 
-class PandyLand(_BasicScraper):
-    url = 'http://pandyland.net/'
-    rurl = escape(url)
-    stripUrl = url + '%s/'
-    firstStripUrl = stripUrl % '1'
-    imageSearch = compile(tagre("img", "src", r'(%scomics/[^"]+)' % rurl))
-    prevSearch =  compile(tagre("a", "href", r'(%s\d+/)' % rurl, after="prev"))
-    help = 'Index format: number'
-
-
 class ParadigmShift(_BasicScraper):
     url = 'http://www.paradigmshiftmanga.com/'
     starter = indirectStarter(url, compile(tagre("a", "href", r'([^"]+)', after="next-comic-link")))
@@ -59,11 +49,11 @@ class PastelDefender(_BasicScraper):
     help = 'Index format: nnn'
 
 
-class PebbleVersion(_BasicScraper):
+class PebbleVersion(_ParserScraper):
     url = 'http://www.pebbleversion.com/'
     stripUrl = url + 'Archives/Strip%s.html'
-    imageSearch = compile(r'<img src="(ComicStrips/.+?|../ComicStrips/.+?)"')
-    prevSearch = compile(r'<a href="((?!.+?">First Comic)Archives/Strip.+?|(?=.+?">Previous Comic)(?!.+?">First Comic)Strip.+?)"')
+    imageSearch = "//table/tr[2]//img"
+    prevSearch = '//a[text()="Previous Comic"]'
     help = 'Index format: n (unpadded)'
 
 
@@ -173,12 +163,12 @@ class PiledHigherAndDeeper(_BasicScraper):
     namer = queryNamer('comicid', usePageUrl=True)
 
 
-class Pimpette(_BasicScraper):
+class Pimpette(_ParserScraper):
     url = 'http://pimpette.ca/'
     stripUrl = url + 'index.php?date=%s'
     firstStripUrl = stripUrl % '20030905'
-    imageSearch = compile(tagre("img", "src", r'(strips/[^"]+)'))
-    prevSearch = compile(tagre("a", "href", r'(index\.php\?date=\d+)') + "Previous")
+    imageSearch = '//div[@id="strip"]/img'
+    prevSearch = '//a[text()="previous"]'
     help = 'Index format: yyyymmdd'
 
 
@@ -191,17 +181,17 @@ class _PlanescapeSurvival(_BasicScraper):
     help = 'Index format: nnn'
 
 
-class PokeyThePenguin(_BasicScraper):
-    baseUrl = 'http://www.yellow5.com/pokey/archive/'
-    url = baseUrl + 'index558.html'
-    stripUrl = baseUrl + 'index%s.html'
+class PokeyThePenguin(_ParserScraper):
+    url = 'http://www.yellow5.com/pokey/archive/'
+    stripUrl = url + 'index%s.html'
     firstStripUrl = stripUrl % '1'
-    imageSearch = compile(tagre("img", "src", r'(pokey\d+[^"]+)'))
+    imageSearch = '//p/img'
     prevSearch = True
     multipleImagesPerStrip = True
+    starter = indirectStarter(url, "(//a)[last()]")
     help = 'Index format: number'
 
-    def getPrevUrl(self, url, data, baseUrl):
+    def getPrevUrl(self, url, data):
         """Decrease index.html number."""
         mo = compile(r"index(\d+)\.html").search(url)
         num = int(mo.group(1)) - 1
@@ -237,15 +227,6 @@ class PS238(_ParserScraper):
     imageSearch = '//div[@id="comic"]//img'
     prevSearch = '//a[@class="comic-nav-base comic-nav-previous"]'
     help = 'Index format: yyyy-mm-dd'
-
-
-class ProperBarn(_BasicScraper):
-    url = 'http://www.nitrocosm.com/go/gag/'
-    stripUrl = url + '%s/'
-    firstStripUrl = stripUrl % '1'
-    imageSearch = compile(tagre("img", "src", r'(http://content\.nitrocosm\.com/gag/\d+\.[^"]+)'))
-    prevSearch = compile(tagre("a", "href", r'(http://www\.nitrocosm\.com/go/gag/\d+/)', after="nav_btn_previous"))
-    help = 'Index format: nnn'
 
 
 class PunksAndNerds(_BasicScraper):

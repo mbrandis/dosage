@@ -8,16 +8,13 @@ from ..helpers import indirectStarter
 from ..util import tagre
 
 
-class OctopusPie(_BasicScraper):
+class OctopusPie(_ParserScraper):
     url = 'http://www.octopuspie.com/'
     rurl = escape(url)
-    starter = indirectStarter(url,
-        compile(tagre("a", "href", r'(%s[^"]+)' % rurl) +
-                tagre("img", "src", r'%sjunk/latest\.png' % rurl)))
     stripUrl = url + '%s/'
     firstStripUrl = stripUrl % '2007-05-14/001-pea-wiggle'
-    imageSearch = compile(tagre("img", "src", r'(%sstrippy/[^"]+)' % rurl))
-    prevSearch = compile(tagre("a", "href", r'(%s[^"]+)' % rurl, after="prev"))
+    imageSearch = '//img[@title]'
+    prevSearch = '//a[@rel="prev"]'
     help = 'Index format: yyyy-mm-dd/nnn-strip-name'
 
 
@@ -76,16 +73,6 @@ class OmakeTheater(_ParserScraper):
     imageSearch = ".comicImage img"
     prevSearch = ".previous a"
     help = 'Index format: number (unpadded)'
-
-
-class OnTheEdge(_BasicScraper):
-    url = 'http://ontheedgecomics.com/'
-    rurl = escape(url)
-    stripUrl = url + 'comic/%s/'
-    firstStripUrl = stripUrl % 'ote0001'
-    imageSearch = compile(r'<img src="(%scomics/.+?)"' % rurl)
-    prevSearch = compile(r'<a href="([^"]+)" rel="prev">')
-    help = 'Index format: nnn (unpadded)'
 
 
 class OnTheFastrack(_BasicScraper):

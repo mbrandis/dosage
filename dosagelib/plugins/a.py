@@ -122,15 +122,6 @@ class ALessonIsLearned(_BasicScraper):
     help = 'Index format: nnn'
 
 
-class Alice(_BasicScraper):
-    url = 'http://alice.alicecomics.com/'
-    rurl = escape(url)
-    stripUrl = url + '%s/'
-    imageSearch = compile(tagre("img", "src", r'(%swp-content/uploads/\d+/\d+/\d+-\d+-\d+[^"]+)' % rurl))
-    prevSearch = compile(tagre("a", "href", r'(%salicecomics/[^"]+)' % rurl, after="previous"))
-    help = 'Index format: name'
-
-
 class AlienLovesPredator(_BasicScraper):
     url = 'http://alienlovespredator.com/'
     stripUrl = url + '%s/'
@@ -218,16 +209,6 @@ class AmazingSuperPowers(_BasicScraper):
             # video
             self.stripUrl % '2013/05/orbital-deathray-kickstarter',
         )
-
-
-class Amya(_BasicScraper):
-    url = 'http://www.amyachronicles.com/'
-    rurl = escape(url)
-    stripUrl = url + 'archives/%s'
-    firstStripUrl = stripUrl % '117'
-    imageSearch = compile(tagre("img", "src", r'(%scomics/[^"]+)' % rurl))
-    prevSearch = compile(tagre("a", "href", r'(%sarchives/\d+)' % rurl, after="Previous"))
-    help = 'Index format: n'
 
 
 class Angband(_BasicScraper):
@@ -331,19 +312,3 @@ class ASkeweredParadise(_BasicScraper):
     imageSearch = compile(tagre("img", "src", r'(http://aspcomics\.net/sites/default/files[^"]*/asp\d+\.jpg)[^"]+'))
     prevSearch = compile(tagre("a", "href", "(/comic/\d+)")+r"[^>]+Previous")
     help = 'Index format: nnn'
-
-
-class AxeCop(_BasicScraper):
-    url = 'http://axecop.com/'
-    rurl = escape(url)
-    starter = bounceStarter(url,
-        (
-          compile(tagre("a", "href", r'(%scomic/page-\d+-[^"]+/)' % rurl, after="navi-next")),
-          compile(tagre("a", "href", r'(%scomic/[^"]+/)' % rurl, after="navi-next")),
-        )
-    )
-    stripUrl = url + 'comic/%s/'
-    firstStripUrl = stripUrl % '0'
-    imageSearch = compile(tagre("img", "src", r'(http://mainsite\.axecop\.wpengine\.com/wp-content/uploads/sites/\d+/\d+/\d+/[^"]+)'))
-    prevSearch = compile(tagre("a", "href", r'(%scomic/[^"]+/)' % rurl, after="navi-prev"))
-    help = 'Index format: usually stripname'

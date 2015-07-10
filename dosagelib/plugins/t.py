@@ -27,25 +27,6 @@ class TheDevilsPanties(_BasicScraper):
     help = 'Index format: number'
 
 
-class TheDreamlandChronicles(_BasicScraper):
-    url = 'http://www.thedreamlandchronicles.com/'
-    stripUrl = url + 'comic/%s/'
-    firstStripUrl = stripUrl % 'page-1'
-    rurl = escape(url)
-    imageSearch = compile(tagre("img", "src", r'(http://www\.thedreamlandchronicles\.com/wp-content/uploads/\d+/\d+/\d+-\d+-\d+[^"]*)'))
-    prevSearch = compile(tagre("a", "href", r'(%s[^"]*)' % rurl, after='navi-prev"'))
-    help = 'Index format: page-n or chapter-n'
-
-    @classmethod
-    def namer(cls, imageUrl, pageUrl):
-        """Remove trailing digit from day number."""
-        name = imageUrl.split('/')[-1]
-        base, ext = name.split('.', 1)
-        bp = base.split('-')
-        if len(bp[2]) == 3:
-            bp[2] = bp[2][:-1]
-        return "%s-%s-%s.%s" % (bp[0], bp[1], bp[2], ext)
-
 class TheGamerCat(_ParserScraper):
     url = "http://www.thegamercat.com/"
     stripUrl = url + "comic/%s/"
@@ -54,17 +35,6 @@ class TheGamerCat(_ParserScraper):
     imageSearch = '#comic img'
     prevSearch = '.comic-nav-previous'
     help = 'Index format: stripname'
-
-
-class TheGentlemansArmchair(_BasicScraper):
-    url = 'http://thegentlemansarmchair.com/'
-    rurl = escape(url)
-    stripUrl = url + 'comic/%s'
-    firstStripUrl = stripUrl % 'dora-the-explorer/'
-    imageSearch =  compile(tagre("div", "id", r'comic') + "\s*.*\s*" + tagre("img", "src", r'(%swp-content/uploads/\d+/\d+/[^"]+)' % rurl))
-    prevSearch = compile(tagre("a", "href", r'(%s[^"]+)' % rurl, after='navi-prev'))
-    textSearch = compile(r'<h3 class="comic-post-widget-title">(.+)</h3>')
-    help = 'Index Format: name'
 
 
 class TheLandscaper(_BasicScraper):
@@ -174,16 +144,6 @@ class _TwoLumps(_BasicScraper):
     imageSearch = compile(tagre("img", "src", r'(/comics/[^"]+)'))
     prevSearch = compile(tagre("a", "href", r'(/d/\d+\.html)', after="prev"))
     help = 'Index format: yyyymmdd'
-
-
-class TwoTwoOneFour(_BasicScraper):
-    url = 'http://www.nitrocosm.com/go/2214_classic/'
-    rurl = escape(url)
-    stripUrl = url + '%s/'
-    firstStripUrl = stripUrl % '1'
-    imageSearch = compile(tagre("img", "src", r'(http://content\.nitrocosm\.com/[^"]+)', before="gallery_display"))
-    prevSearch = compile(tagre("a", "href", r'(%s\d+/)' % rurl, after="Previous"))
-    help = 'Index format: n (unpadded)'
 
 
 class TheWhiteboard(_BasicScraper):

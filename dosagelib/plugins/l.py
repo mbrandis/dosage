@@ -3,7 +3,7 @@
 # Copyright (C) 2012-2014 Bastian Kleineidam
 
 from re import compile, escape
-from ..scraper import _BasicScraper
+from ..scraper import _BasicScraper, _ParserScraper
 from ..helpers import bounceStarter, indirectStarter
 from ..util import tagre
 
@@ -77,25 +77,19 @@ class LittleGamers(_BasicScraper):
     help = 'Index format: yyyy/mm/dd/name'
 
 
-class LoadingArtist(_BasicScraper):
-    url = 'http://www.loadingartist.com/'
-    rurl = escape(url)
-    stripUrl = url + '%s/'
-    firstStripUrl = stripUrl % '2011/01/04/born'
-    imageSearch = compile(tagre("img", "src", r'(%swp-content/uploads/\d+/\d+/[^"]+)' % rurl))
-    prevSearch = compile(tagre("a", "href", r'(%s\d+/\d+/\d+/[^"]+/)' % rurl, after="prev"))
-    help = 'Index format: yyyy/mm/dd/stripname'
+class LoadingArtist(_ParserScraper):
+    url = 'http://www.loadingartist.com/comic/new-update/'
+    imageSearch = '//div[@class="comic"]//img'
+    prevSearch = "//a[contains(concat(' ', @class, ' '), ' prev ')]"
 
-
-class LookingForGroup(_BasicScraper):
+class LookingForGroup(_ParserScraper):
     url = 'http://www.lfgcomic.com/'
     rurl = escape(url)
     stripUrl = url + 'page/%s/'
     firstStripUrl = stripUrl % '1'
-    imageSearch = compile(tagre("img", "src", r'(http://(?:www|cdn)\.lfgcomic\.com/wp-content/uploads/\d+/\d+/lfg[^"]+)'))
-    #http://www.lfgcomic.com/wp-content/uploads/2014/06/lfg2827-787-jun30-14.gif
-    prevSearch = compile(tagre("a", "href", r'(%spage/[-0-9]+/)' % rurl, after="comic-nav-prev"))
-    starter = indirectStarter(url,
-        compile(tagre("a", "href", r'(%spage/[-0-9]+/)' % rurl, after="feature-item-link")))
+    css = True
+    imageSearch = '#comic img'
+    prevSearch = '#comic-left > a'
+    starter = indirectStarter(url, '#header-dropdown-comic-lfg > a:nth-of-type(2)')
     nameSearch = compile(r'/page/([-0-9]+)/')
     help = 'Index format: nnn'

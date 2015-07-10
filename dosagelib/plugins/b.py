@@ -35,16 +35,6 @@ class BadMachinery(_BasicScraper):
     help = 'Index format: yyyymmdd'
 
 
-class Bardsworth(_BasicScraper):
-    url = 'http://www.bardsworth.com/'
-    rurl = escape(url)
-    stripUrl = url + '?comic=%s'
-    firstStripUrl = stripUrl % '750'
-    imageSearch = compile(tagre("img", "src", r'(%swp-content/uploads/\d+/\d+/[^"]+)' % rurl))
-    prevSearch = compile(tagre("a", "href", r'(%s[^"]+)' % rurl, after="prev"))
-    help = 'Index format: stripname'
-
-
 class Baroquen(_BasicScraper):
     url = 'http://www.baroquencomics.com/'
     rurl = escape(url)
@@ -160,6 +150,10 @@ class BladeKitten(_ParserScraper):
         page = page.split(':')[1]
         return "bladekitten-%02i-%02i-%s" % (int(chapter), int(page), filename)
 
+    @classmethod
+    def getDisabledReasons(cls):
+        return {'cannotReadOnline': 'Comic is not available for reading online.'}
+
 class BlankIt(_BasicScraper):
     url = 'http://blankitcomics.com/'
     stripUrl = url + '%s/'
@@ -181,17 +175,6 @@ class Blip(_BasicScraper):
     def prevUrlModifier(cls, prevUrl):
         if prevUrl:
             return prevUrl.replace("www.blipcomic.com", "blipcomic.com")
-
-
-class BloodBound(_BasicScraper):
-    adult = True
-    url = 'http://bloodboundcomic.com/'
-    rurl = escape(url)
-    stripUrl = url + '%s/'
-    firstStripUrl = stripUrl % '2006/06/06112006'
-    imageSearch = compile(tagre("img", "src", r'(%scomics/[^"]+)' % rurl))
-    prevSearch = compile(tagre("a", "href", r'(%s[^"]+)' % rurl, after="prev"))
-    help = 'Index format: yyyy/mm/name'
 
 
 class BMovieComic(_BasicScraper):
@@ -258,15 +241,6 @@ class BoyOnAStickAndSlither(_BasicScraper):
     @classmethod
     def namer(cls, imageUrl, pageUrl):
         return pageUrl.rsplit('/')[-1]
-
-
-class BratHalla(_BasicScraper):
-    url = 'http://brat-halla.com/'
-    stripUrl = url + 'comic/%s/'
-    firstStripUrl = stripUrl % '1-balder-dash'
-    imageSearch = compile(r"(/comics/.+?)' target='_blank")
-    prevSearch = compile(r'headernav2".+?"(http.+?)"')
-    help = 'Index format: number-stripname'
 
 
 class BrentalFloss(_BasicScraper):
@@ -336,16 +310,6 @@ class BrightlyWound(_BasicScraper):
     imageSearch = compile(tagre("img", "src", r"(comic/[^']+)", quote="'"))
     prevSearch = compile(r'<div id=\'navback\'><a href=\'(\?comic\=\d+)\'><img src=\'images/previous.png\'')
     help = 'Index format: nnn'
-
-
-class BroodHollow(_BasicScraper):
-    url = 'http://broodhollow.chainsawsuit.com/'
-    rurl = escape(url)
-    stripUrl = url + 'page/%s/'
-    firstStripUrl = stripUrl % '2012/10/08/broodhollow'
-    imageSearch = compile(tagre("img", "src", r'(%swp-content/uploads/\d+/\d+/[^"]+)' % rurl))
-    prevSearch = compile(tagre("a", "href", r'(%spage/\d+/\d+/\d+/[^"]+)' % rurl, after="prev"))
-    help = 'Index format: yyyy/mm/dd/stripname'
 
 
 # XXX disallowed by robots.txt

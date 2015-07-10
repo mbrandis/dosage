@@ -2,7 +2,7 @@
 # Copyright (C) 2012-2014 Bastian Kleineidam
 
 from re import compile, escape
-from ..scraper import _BasicScraper
+from ..scraper import _BasicScraper, _ParserScraper
 from ..util import tagre
 from ..helpers import bounceStarter
 
@@ -46,26 +46,6 @@ class HarkAVagrant(_BasicScraper):
         filename = imageUrl.rsplit('/', 1)[1]
         num = pageUrl.rsplit('=', 1)[1]
         return '%s-%s' % (num, filename)
-
-
-class HijinksEnsue(_BasicScraper):
-    url = 'http://hijinksensue.com/'
-    rurl = escape(url)
-    stripUrl = url + '%s/'
-    firstStripUrl = stripUrl % '2007/05/11/a-soul-as-black-as-eyeliner'
-    imageSearch = compile(tagre("img", "src", r'(%scomics/\d+-\d+-\d+[^"]+)' % rurl))
-    prevSearch = compile(tagre("a", "href", r'(%s\d+/\d+/\d+/[^"]+)' % rurl, after="navi-prev"))
-    help = 'Index format: yyyy/mm/dd/stripname'
-
-
-class Hipsters(_BasicScraper):
-    url = 'http://www.hipsters-comic.com/'
-    rurl = escape(url)
-    stripUrl = url + '%s/'
-    firstStripUrl = stripUrl % '2010/08/hip01'
-    imageSearch = compile(tagre("img", "src", r'(%scomics/\d+-\d+-\d+[^"]+)' % rurl))
-    prevSearch = compile(tagre("a", "href", r'(%s\d+/\d+/[^"]+)' % rurl, after="prev"))
-    help = 'Index format: yyyy/dd/stripname'
 
 
 class HorribleVille(_BasicScraper):

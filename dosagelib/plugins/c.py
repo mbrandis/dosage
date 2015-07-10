@@ -4,7 +4,7 @@
 
 from re import compile, escape
 
-from ..scraper import _BasicScraper
+from ..scraper import _BasicScraper, _ParserScraper
 from ..helpers import bounceStarter, indirectStarter
 from ..util import tagre
 
@@ -99,34 +99,13 @@ class CatAndGirl(_BasicScraper):
         )
 
 
-class Catena(_BasicScraper):
-    url = 'http://catenamanor.com/'
-    rurl = escape(url)
-    stripUrl = url + '%s/'
-    firstStripUrl = stripUrl % '2003/06/17/the-start-of-it-all'
-    imageSearch = compile(tagre("img", "src", r'(%scomics/[^"]+)' % rurl))
-    prevSearch = compile(tagre("a", "href", r'([^"]+)', after='rel="prev"'))
-    help = 'Index format: yyyy/mm/dd/<name>'
-
-
-class CatsAndCameras(_BasicScraper):
-    url = 'http://catsncameras.com/cnc/'
-    rurl = escape(url)
-    stripUrl = url + '?comic=%s'
-    imageSearch = compile(tagre("img", "src", r'(%swp-content/uploads/\d+/\d+/[^"]+)' % rurl))
-    prevSearch = compile(tagre("span", "class", r'mininav-prev') +
-        tagre("a", "href", r'(%s[^"]+)' % rurl))
-    help = 'Index format: stripname'
-
-
-class ChainsawSuit(_BasicScraper):
+class ChainsawSuit(_ParserScraper):
     url = 'http://chainsawsuit.com/'
     rurl = escape(url)
     stripUrl = url + '%s/'
     firstStripUrl = stripUrl % '2008/03/12/strip-338'
-    imageSearch = compile(tagre("img", "src", r'(%swp-content/uploads/\d+/\d+/[^"]+)' % rurl))
-    prevSearch = compile(tagre("a", "href", r'(%scomic/\d+/\d+/\d+/[^"]+)' % rurl) +
-        tagre("img", "alt", r'previous'))
+    imageSearch = '//div[@id="comic"]//img'
+    prevSearch = '//img[@alt="previous"]/..'
     help = 'Index format: yyyy/mm/dd/stripname'
 
 
@@ -160,13 +139,13 @@ class ChasingTheSunset(_BasicScraper):
     help = 'Index format: n'
 
 
-class CheckerboardNightmare(_BasicScraper):
+class CheckerboardNightmare(_ParserScraper):
     url = 'http://www.checkerboardnightmare.com/'
-    stripUrl = url + 'd/%s.shtml'
-    firstStripUrl = stripUrl % '20001110'
-    imageSearch=compile(tagre("img", "src", r'(/comic[s|/][^"]+)'))
-    prevSearch=compile(tagre("a", "href", r'[^"]*(/d/\d+\.s?html)')+r"[^>]+/images/(?:nav_02|previous_day)\.gif")
-    help='Index format: yyyymmdd'
+    stripUrl = url + 'd/%s'
+    firstStripUrl = stripUrl % '20001110.html'
+    imageSearch = '//td[@colspan="4"]//img'
+    prevSearch = '//td[2]/a'
+    help = 'Index format: yyyymmdd'
 
 
 class Chester5000XYV(_BasicScraper):
@@ -187,13 +166,12 @@ class Chisuji(_BasicScraper):
     help = 'Index format: yyyy/mm/dd/strip-name'
 
 
-class CigarroAndCerveja(_BasicScraper):
+class CigarroAndCerveja(_ParserScraper):
     url = 'http://www.cigarro.ca/'
-    stripUrl = url + '?p=%s'
-    imageSearch = compile(r"(/comics/.+?)'")
-    prevSearch = compile(r'(/\?p=.+?)">&laq')
-    help = 'Index format: non'
-
+    stripUrl = url + 'comic/%s/'
+    firstStripUrl = stripUrl % 'reacquaintance'
+    imageSearch = '//div[@id="comic"]//img',
+    prevSearch = '//a[contains(text()," Prev")]',
 
 class Collar6(_BasicScraper):
     url = 'http://collar6.com/'
@@ -255,37 +233,17 @@ class CoolCatStudio(_BasicScraper):
     help = 'Index format: ccsyyyymmdd'
 
 
-class CorydonCafe(_BasicScraper):
+class CorydonCafe(_ParserScraper):
     url = 'http://corydoncafe.com/'
-    starter = indirectStarter(url,
-        compile(tagre("a", "href", r'(\./\d+/[^"]+)')))
+    starter = indirectStarter(url, '//ul//a')
     stripUrl = url + '%s.php'
-    imageSearch = compile(tagre("img", "src", r"(\./[^']+)", quote="'"))
-    prevSearch = compile(tagre("a", "href", r"(http://corydoncafe\.com/\d+/[^']+)", after="prev", quote="'"))
+    imageSearch = "//center[2]//img"
+    prevSearch = '//a[@title="prev"]'
     help = 'Index format: yyyy/stripname'
 
     @classmethod
     def namer(cls, imageUrl, pageUrl):
         return pageUrl.split('/')[-1].split('.')[0]
-
-
-class CourtingDisaster(_BasicScraper):
-    url = 'http://www.courting-disaster.com/'
-    stripUrl = url + 'archive/%s.html'
-    firstStripUrl = stripUrl % '20050112'
-    imageSearch = compile(tagre("img", "src", r'(/comics/[^"]+)'))
-    prevSearch = compile(tagre("a", "href", r'(/archive/\d+\.html)') + tagre("img", "src", r'/images/previous\.gif'))
-    help = 'Index format: yyyymmdd'
-
-
-class CowboyJedi(_BasicScraper):
-    url = 'http://www.cowboyjedi.com/'
-    rurl = escape(url)
-    stripUrl = url + '%s/'
-    firstStripUrl = stripUrl % '2009/08/10/a-new-webcomic'
-    imageSearch = compile(tagre("img", "src", r'(%scomics/[^"]+)' % rurl))
-    prevSearch = compile(tagre("a", "href", r'(%s[^"]+)' % rurl, after="navi-prev"))
-    help = 'Index format: yyyy/mm/dd/strip-name'
 
 
 class CrapIDrewOnMyLunchBreak(_BasicScraper):
@@ -328,17 +286,6 @@ class CrimsonDark(_BasicScraper):
     help = 'Index format: n (unpadded)'
 
 
-class CraftedFables(_BasicScraper):
-    url = 'http://www.craftedfables.com/'
-    baseUrl = 'http://www.caf-fiends.net/'
-    rurl = escape(baseUrl)
-    stripUrl = baseUrl + 'craftedfables/?p=%s'
-    imageSearch = compile(tagre("img", "src", r'(%scraftedfables/comics/[^"]+)' % rurl))
-    prevSearch = compile(tagre("a", "href", r'(%scraftedfables/[^"]+)' % rurl) +
-        tagre("span", "class", r"prev"))
-    help = 'Index format: nnn'
-
-
 class CucumberQuest(_BasicScraper):
     url = 'http://cucumber.gigidigi.com/'
     rurl = escape(url)
@@ -365,23 +312,13 @@ class Curtailed(_BasicScraper):
     help = 'Index format: yyyy/mm/dd/stripname'
 
 
-class Curvy(_BasicScraper):
+class Curvy(_ParserScraper):
     url = 'http://www.c.urvy.org/'
     stripUrl = url + '?date=%s'
     firstStripUrl = stripUrl % '20080329'
-    imageSearch = compile(tagre("img", "src", r'(/c/[^"]+)'))
-    prevSearch = compile(tagre("a", "href", r'(/\?date=\d+)') +
-        tagre("img", "src", "/nav/prev\.png"))
+    imageSearch = '//div[@id="theActualComic"]//img'
+    prevSearch = '//div[@class="aNavbar"]//p[2]/a'
     help = 'Index format: yyyymmdd'
-    starter = bounceStarter(url,
-        compile(tagre("a", "href", r'(/\?date=\d+)') +
-            tagre("img", "src", "/nav/next\.png")))
-
-    def shouldSkipUrl(self, url, data):
-        """Skip pages without images."""
-        return url in (
-            self.stripUrl % '20130402',
-        )
 
 
 class CyanideAndHappiness(_BasicScraper):

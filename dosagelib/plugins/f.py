@@ -5,7 +5,7 @@
 from re import compile, escape, IGNORECASE
 
 from ..util import tagre
-from ..scraper import _BasicScraper
+from ..scraper import _BasicScraper, _ParserScraper
 from ..helpers import indirectStarter
 
 
@@ -115,15 +115,6 @@ class FonFlatter(_BasicScraper):
        )
 
 
-class Footloose(_BasicScraper):
-    url = 'http://footloosecomic.com/footloose/today.php'
-    stripUrl = 'http://footloosecomic.com/footloose/pages.php?page=%s'
-    firstStripUrl = stripUrl % '1'
-    imageSearch = compile(r'<img src="/footloose/(.+?)"')
-    prevSearch = compile(r'(?:first.+?[^>]).+?(/footloose/.+?)".+?(?:prev)')
-    help = 'Index format: n (unpadded)'
-
-
 class ForLackOfABetterComic(_BasicScraper):
     url = 'http://forlackofabettercomic.com/'
     rurl = r'http://(?:www\.)?forlackofabettercomic\.com/'
@@ -132,15 +123,6 @@ class ForLackOfABetterComic(_BasicScraper):
     imageSearch = compile(tagre("img", "src", r'(%simg/comic/\d+[^"]+)' % rurl, after="comicimg"))
     prevSearch = compile(tagre("a", "href", r'(%s\?id\=\d+)' % rurl) + r'Prev')
     help = 'Index format: number'
-
-
-class FowlLanguage(_BasicScraper):
-    url = 'http://www.fowllanguagecomics.com/'
-    stripUrl = url + 'comic/%s'
-    firstStripUrl =  stripUrl % 'part-of-the-process'
-    imageSearch = compile(tagre("img", "src", r'(http://i\d\.wp\.com/www\.fowllanguagecomics\.com/wp-content/uploads/\d+/\d+/[^"]+\.[a-z]+).*'))
-    prevSearch = compile(tagre("a", "href", r'([^"]+)', after="comic-nav-previous"))
-    help = 'Index format: yyyy/mm/stripname'
 
 
 class Freefall(_BasicScraper):
